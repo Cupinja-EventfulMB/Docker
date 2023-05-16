@@ -58,8 +58,8 @@ app.post('/webhook', (req, res) => {
   // Run the deployment script
   exec('./deploy.sh', (error, stdout, stderr) => {
     if (error) {
-      console.error('Deployment error: ${error}');
-      res.status(500).send('Deployment error ${error}');
+      console.error(`Deployment error: ${error}`);
+      res.status(500).send(`Deployment error ${error}`);
       return;
     }
 
