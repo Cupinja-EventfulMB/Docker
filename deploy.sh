@@ -2,7 +2,7 @@
 
 docker stop container
 
-docker rm container
+docker login
 
 docker pull cvetankapasinechka/cupinja:project  
 
