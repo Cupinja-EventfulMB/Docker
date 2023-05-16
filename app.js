@@ -5,6 +5,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// webhooks
+var { exec } = require('child_process');
+
 // vključimo mongoose in ga povežemo z MongoDB
 var mongoose = require('mongoose');
 var mongoDB = process.env.DATABASE_URL;
@@ -48,6 +51,21 @@ app.use(session({
 app.use(function (req, res, next) {
   res.locals.session = req.session;
   next();
+});
+
+//webhooks
+app.post('/webhook', (req, res) => {
+  // Run the deployment script
+  exec('./deploy.sh', (error, stdout, stderr) => {
+    if (error) {
+      console.error('Deployment error: ${error}');
+      res.status(500).send('Deployment error');
+      return;
+    }
+
+    console.log('Deployment successful: ${stdout}');
+    res.status(200).send('Deployment successful');
+  });
 });
 
 app.use('/', indexRouter);
