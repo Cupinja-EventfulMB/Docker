@@ -32,11 +32,5 @@ jobs:
     steps:
       - name: Send webhook to server
         if: success()
-        uses: distributhor/webhook-action@v1
-        with:
-          url: ${{ secrets.DOCKER_URL }}
-          method: POST
-          body: |
-            {
-              "message": "New version of our app is ready!"
-            }
+        run: |
+          curl -X POST -H "Content-Type: application/json" -d '{"message": "New version of the app is available!"}' ${{ secrets.DOCKER_URL }}
