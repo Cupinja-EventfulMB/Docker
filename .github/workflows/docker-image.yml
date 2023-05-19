@@ -24,3 +24,19 @@ jobs:
 
       - name: Push Docker image to Docker Hub
         run: docker push cvetankapasinechka/cupinja:project
+
+  send-webhook:
+    needs: build-and-upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send webhook to server
+        if: success()
+        uses: distributhor/webhook-action@v1
+        with:
+          url: ${{ secrets.DOCKER_URL }}
+          method: POST
+          body: |
+            {
+              "message": "New version of our app is ready!"
+            }
