@@ -15,6 +15,12 @@ jobs:
         run: |
           commit_message=$(git log -1 --pretty=%B)
           if [[ ! $commit_message =~ EMB- ]]; then
-            echo "::error::You need to link your pushes with Jira issues"
+            echo "::error::You need to link your commits to Jira issues"
             exit 1
+          else
+            echo "Commit message validation passed"
           fi
+          
+      - name: Display Commit Message
+        run: |
+          echo "Commit Message: ${{ github.event.commits[0].message }}"
