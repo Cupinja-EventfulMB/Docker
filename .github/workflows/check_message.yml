@@ -22,6 +22,7 @@ jobs:
             exit 1
           else
             echo "Commit message validation passed"
+          fi
           
       - name: Display Commit Message
         run: |
