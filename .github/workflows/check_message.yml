@@ -19,7 +19,6 @@ jobs:
           commit_message=$(git log -1 --pretty=%B)
           if [[ ! $commit_message =~ EMB- ]]; then
             echo "::error::You need to link your commits to Jira issues"
-            echo "this is a check to see if the workflow fails"
             exit 1
           else
             echo "Commit message validation passed"
