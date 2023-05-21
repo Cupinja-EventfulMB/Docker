@@ -6,7 +6,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 // webhooks
-var { exec } = require('child_process');
+const { exec } = require('child_process');
 
 // vključimo mongoose in ga povežemo z MongoDB
 var mongoose = require('mongoose');
@@ -44,7 +44,7 @@ app.use(session({
   secret: 'work hard',
   resave: true,
   saveUninitialized: false,
-  store: MongoStore.create({mongoUrl: mongoDB})
+  store: MongoStore.create({   mongoUrl: process.env.DATABASE_URL, })
 }));
 //Shranimo sejne spremenljivke v locals
 //Tako lahko do njih dostopamo v vseh view-ih (glej layout.hbs)
@@ -55,18 +55,24 @@ app.use(function (req, res, next) {
 
 //webhooks
 app.post('/webhook', (req, res) => {
-  // Run the deployment script
-  exec('./deploy.sh', (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Deployment error: ${error}`);
-      res.status(500).send(`Deployment error ${error}`);
-      return;
-    }
+  const { message } = req.body;
+  // Process the webhook payload here
+  console.log('Received webhook:', message);
 
-    console.log('Deployment successful: ${stdout}');
-    res.status(200).send('Deployment successful');
+  exec('./deploy.sh', (error, stdout, stderr) => {
+     if (error) {
+        console.error('Error executing deploy.sh:', error);
+        res.sendStatus(500);
+     } else {
+      // Send a response indicating successful processing of the webhook
+       console.log('Deploy script executed successfully');
+       res.sendStatus(200);
+     }
+
   });
+
 });
+
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
