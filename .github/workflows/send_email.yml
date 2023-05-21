@@ -1,0 +1,30 @@
+name: Notify on Push to Main Branch
+
+on:
+  push:
+    branches:
+      
+main
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+
+    steps:
+      
+name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+
+      
+name: Send Email Notification
+      env:
+        TO_EMAIL: ${{ secrets.NOTIFICATION_EMAIL }}
+        GITHUB_ACTOR: ${{ github.actor }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_REF: ${{ github.ref }}
+        GITHUB_SHA: ${{ github.sha }}
+      run: |
+        npm install -g mailx
+        echo "Push event occurred on the main branch of $GITHUB_REPOSITORY." | mailx -s "Push event on $GITHUB_REPOSITORY" "$TO_EMAIL"
